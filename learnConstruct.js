@@ -1,39 +1,40 @@
+// view history button
+const histButton = document.getElementsByClassName('d2l-action-buttons-item')[0];
+
 // download button
 const downloadButton = document.createElement('button');
+histButton.insertAdjacentElement("afterend", downloadButton);
 downloadButton.innerText = 'Download ICS File';
 downloadButton.classList.add("d21-button");
 Object.assign(downloadButton.style, {
-    position: 'absolute',
-    left: '255px',
-    top: '254px',
     width: '140px',
     height: '42px',
     cursor: 'pointer',
-    zIndex: 9999,
+    zIndex: 2,
 });
 
+downloadButton.style.marginRight = "15px";
 downloadButton.style.color = "#202122";
 downloadButton.style.backgroundColor = "#e3e9f1";
 downloadButton.style.fontWeight = "700";
 downloadButton.style.fontSize = ".7rem";
 downloadButton.style.fontFamily = "inherit";
 downloadButton.style.borderStyle = "none";
+downloadButton.style.borderRadius = "5px";
 
 // append the button so it actually shows
-document.body.appendChild(downloadButton);
+histButton.appendChild(downloadButton);
 
 // select all button
 const selectAllButton = document.createElement('button');
+downloadButton.insertAdjacentElement("afterend", selectAllButton);
 selectAllButton.innerText = 'Select All';
 selectAllButton.classList.add("d21-button");
 Object.assign(selectAllButton.style, {
-    position: 'absolute',
-    left: '410px',
-    top: '254px',
     width: '140px',
     height: '42px',
     cursor: 'pointer',
-    zIndex: 9999,
+    zIndex: 2,
 });
 
 selectAllButton.style.color = "#202122";
@@ -42,9 +43,10 @@ selectAllButton.style.fontWeight = "700";
 selectAllButton.style.fontSize = ".7rem";
 selectAllButton.style.fontFamily = "inherit";
 selectAllButton.style.borderStyle = "none";
+selectAllButton.style.borderRadius = "5px";
 
 // append the button so it actually shows
-document.body.appendChild(selectAllButton);
+histButton.appendChild(selectAllButton);
 
 // check boxes for each assignment
 const table = document.getElementById('z_a');
@@ -74,6 +76,21 @@ for (let i = 2; i < assignments.length; i++) {
         titleRows.push(i);
     }
 }
+
+// hover effects for buttons
+downloadButton.addEventListener("mouseenter", () => {
+    downloadButton.style.backgroundColor = "#d0d6df"; // darker shade
+});
+downloadButton.addEventListener("mouseleave", () => {
+    downloadButton.style.backgroundColor = "#e3e9f1"; // original
+});
+
+selectAllButton.addEventListener("mouseenter", () => {
+    selectAllButton.style.backgroundColor = "#d0d6df";
+});
+selectAllButton.addEventListener("mouseleave", () => {
+    selectAllButton.style.backgroundColor = "#e3e9f1";
+});
 
 // event listeners for buttons
 selectAllButton.addEventListener('click', () => {
