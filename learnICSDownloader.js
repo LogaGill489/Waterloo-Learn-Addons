@@ -1,9 +1,17 @@
 // view history button
-const histButton = document.getElementsByClassName('d2l-action-buttons-item')[0];
+let isDrop = false;
+let buttonRef;
+if (window.location.href.includes("learn.uwaterloo.ca/d2l/lms/dropbox/user/folders_list")) {
+    isDrop = true;
+    buttonRef = document.getElementsByClassName('d2l-action-buttons-item')[0];
+}
+else {
+    buttonRef = document.getElementsByClassName('d2l-heading-title')[0];
+}
 
 // download button
 const downloadButton = document.createElement('button');
-histButton.insertAdjacentElement("afterend", downloadButton);
+buttonRef.insertAdjacentElement("afterend", downloadButton);
 downloadButton.innerText = 'Download ICS File';
 downloadButton.classList.add("d21-button");
 Object.assign(downloadButton.style, {
@@ -12,6 +20,12 @@ Object.assign(downloadButton.style, {
     cursor: 'pointer',
     zIndex: 2,
 });
+
+if (!isDrop) {
+    downloadButton.style.position = "relative";
+    downloadButton.style.top = "45px";
+    downloadButton.style.right = "160px";
+}
 
 downloadButton.style.marginRight = "15px";
 downloadButton.style.color = "#202122";
@@ -23,7 +37,7 @@ downloadButton.style.borderStyle = "none";
 downloadButton.style.borderRadius = "5px";
 
 // append the button so it actually shows
-histButton.appendChild(downloadButton);
+buttonRef.appendChild(downloadButton);
 
 // select all button
 const selectAllButton = document.createElement('button');
@@ -37,6 +51,12 @@ Object.assign(selectAllButton.style, {
     zIndex: 2,
 });
 
+if (!isDrop) {
+    selectAllButton.style.position = "relative";
+    selectAllButton.style.top = "45px";
+    selectAllButton.style.right = "160px";
+}
+
 selectAllButton.style.color = "#202122";
 selectAllButton.style.backgroundColor = "#e3e9f1";
 selectAllButton.style.fontWeight = "700";
@@ -46,20 +66,24 @@ selectAllButton.style.borderStyle = "none";
 selectAllButton.style.borderRadius = "5px";
 
 // append the button so it actually shows
-histButton.appendChild(selectAllButton);
+buttonRef.appendChild(selectAllButton);
 
 // check boxes for each assignment
-const table = document.getElementById('z_a');
+let table = document.getElementById('z_a');
+if (!isDrop) {
+    table = document.getElementById('z_b');
+}
 const assignments = table.querySelectorAll('tr');
 var titleRows = []; // keeps track of where title rows are
 // start at 2 to skip the first two title rows
-for (let i = 2; i < assignments.length; i++) {
+for (let i = 1; i < assignments.length; i++) {
     // doesn't add checkboxes for title rows
     if (!assignments[i].classList.contains('d_ggl2')) {
-        const checkBox = document.createElement('input');
-        checkBox.classList.add('assignment-checkbox');
-        checkBox.type = 'checkbox';
-        Object.assign(checkBox.style, {
+        if (isDrop || assignments[i].children[0].children[1].children[0].children[0].innerText !== "") {
+            const checkBox = document.createElement('input');
+            checkBox.classList.add('assignment-checkbox');
+            checkBox.type = 'checkbox';
+            Object.assign(checkBox.style, {
             position: 'absolute',
             left: '-40px',
             width: '25px',
@@ -68,9 +92,9 @@ for (let i = 2; i < assignments.length; i++) {
             zIndex: 9999
         });
 
-        checkBox.style.marginTop = assignments[i].offsetHeight / 2 - 12 + 'px';
-
+        checkBox.style.marginTop = assignments[i].offsetHeight / 2 + 'px';
         assignments[i].appendChild(checkBox);
+        }
     }
     else {
         titleRows.push(i);
@@ -102,7 +126,10 @@ selectAllButton.addEventListener('click', () => {
 
 function findAssignmentIndex(i) {
     //finds the index as variable j of the selected assignment
-    let j = i + 2;
+    let j = i + 1;
+    if (!isDrop) {
+        j++;
+    }
     
     for (let k = 0; k < titleRows.length; k++) {
         if (j >= titleRows[k]) {
@@ -117,6 +144,7 @@ function findAssignmentIndex(i) {
 }
 
 function dateDecoder(dateString) {
+    if (dateString === "") return "N/A";
     // expects strings like: "Due on Sep 24, 2025 4:59 PM"
     const m = dateString.match(/([A-Za-z]{3})\s+(\d{1,2}),\s+(\d{4})\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
     if (!m) return ""; // return empty on unexpected format
@@ -167,15 +195,34 @@ function addToICS(i) {
     const courseTitleEle = document.getElementsByClassName('d2l-navigation-s-link');
     const courseTitle = courseTitleEle[0].innerText;
 
-    const assignmentTitle = assignments[i].children[0].children[0].children[0].children[0].children[0].children[0].innerText;
-    const assignmentDesc = assignments[i].children[0].children[0].children[0].children[0].children[0].children[0].href;
-    const assignmentDate = dateDecoder(assignments[i].children[0].children[3].children[0].children[0].children[0].children[0].innerText);
-    const assignmentLink = assignments[i].children[1].children[0].href;
+    let assignmentTitle;
+    let assignmentDesc;
+    let assignmentDate;
+    let assignmentLink;
+
+    try {
+        assignmentTitle = assignments[i].children[0].children[0].children[0].children[0].children[0].children[0].innerText;
+        assignmentDesc = assignments[i].children[0].children[0].children[0].children[0].children[0].children[0].href;
+        assignmentDate = dateDecoder(assignments[i].children[0].children[3].children[0].children[0].children[0].children[0].innerText);
+        assignmentLink = assignments[i].children[1].children[0].href;
+    }
+    catch {
+        assignmentTitle = assignments[i].children[0].children[0].children[0].children[0].innerText;
+        assignmentLink = assignments[i].children[0].children[0].children[0].children[0].href;
+        assignmentDate = dateDecoder(assignments[i].children[0].children[1].children[0].children[0].innerText);
+    }
 
     icsContent += "BEGIN:VEVENT\n";
-    icsContent += "SUMMARY:" + courseTitle + " | " + assignmentTitle + "\n";
-    icsContent += "DESCRIPTION:" + assignmentTitle + " is " + assignments[i].children[0].children[3].children[0].children[0].children[0].children[0].innerText + ". You can learn more about the assignment at " + assignmentDesc + " and submit your assignment at " + assignmentLink + "\n";
-    icsContent += "UID:" + assignmentDate.start + + i + "@uwaterlooLearnDropboxes\n";
+    if(isDrop) {
+        icsContent += "SUMMARY:" + courseTitle + " | " + assignmentTitle + "\n";
+        icsContent += "DESCRIPTION:" + assignmentTitle + " is " + assignments[i].children[0].children[3].children[0].children[0].children[0].children[0].innerText + ". You can learn more about the assignment at " + assignmentDesc + " and submit your assignment at " + assignmentLink + "\n";
+        icsContent += "UID:" + assignmentDate.start + + i + "@uwaterlooLearnDropboxes\n";
+    }
+    else {
+        icsContent += "SUMMARY:" + courseTitle + " | " + assignmentTitle + " | Quiz\n";
+        icsContent += "DESCRIPTION:" + assignmentTitle + " is " + assignments[i].children[0].children[1].children[0].children[0].innerText + ". The quiz can be taken at " + window.location.href + "\n";
+        icsContent += "UID:" + assignmentDate.start + + i + "@uwaterlooLearnQuizzes\n";
+    }
     icsContent += "DTSTAMP:" + assignmentDate.start + "Z\n";
     icsContent += "DTSTART:" + assignmentDate.start + "\n";
     icsContent += "DTEND:" + assignmentDate.end + "\n";

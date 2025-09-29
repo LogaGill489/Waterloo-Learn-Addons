@@ -5,8 +5,8 @@
     "description": "Download assignment due dates from UW Learn.",
     "content_scripts": [
         {
-            "matches": ["*://learn.uwaterloo.ca/d2l/lms/dropbox/user/folders_list.*"],
-            "js": ["learnConstruct.js"]
+            "matches": ["*://learn.uwaterloo.ca/d2l/lms/dropbox/user/folders_list.*", "*://learn.uwaterloo.ca/d2l/lms/quizzing/user/quizzes_list.*"],
+            "js": ["learnICSDownloader.js"]
         }
     ]
 }
