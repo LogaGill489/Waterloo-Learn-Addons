@@ -1,3 +1,7 @@
+/// Learn ICS Downloader
+/// Implements a button on UW Learn dropbox and quiz pages to download selected assignments/quizzes as an ICS file.
+/// Author(s): Logan Gillett
+
 // view history button
 let isDrop = false;
 let buttonRef;
@@ -74,26 +78,28 @@ if (!isDrop) {
     table = document.getElementById('z_b');
 }
 const assignments = table.querySelectorAll('tr');
-var titleRows = []; // keeps track of where title rows are
+let titleRows = []; // keeps track of where title rows are
 // start at 2 to skip the first two title rows
 for (let i = 1; i < assignments.length; i++) {
     // doesn't add checkboxes for title rows
     if (!assignments[i].classList.contains('d_ggl2')) {
-        if (isDrop || assignments[i].children[0].children[1].children[0].children[0].innerText !== "") {
+        if (!(assignments[i].classList.contains('d_gh')) && (isDrop || assignments[i].children[0].children[1].children[0].children[0].innerText !== "")) {
             const checkBox = document.createElement('input');
             checkBox.classList.add('assignment-checkbox');
             checkBox.type = 'checkbox';
             Object.assign(checkBox.style, {
-            position: 'absolute',
-            left: '-40px',
-            width: '25px',
-            height: '25px',
-            cursor: 'pointer',
-            zIndex: 9999
-        });
-
-        checkBox.style.marginTop = assignments[i].offsetHeight / 2 + 'px';
-        assignments[i].appendChild(checkBox);
+                position: 'absolute',
+                left: '-40px',
+                width: '25px',
+                height: '25px',
+                cursor: 'pointer',
+                zIndex: 9999
+            });
+            checkBox.style.marginTop = assignments[i].offsetHeight / 2 + 'px';
+            assignments[i].appendChild(checkBox);
+        }
+        else {
+            titleRows.push(i);
         }
     }
     else {
@@ -126,21 +132,17 @@ selectAllButton.addEventListener('click', () => {
 
 function findAssignmentIndex(i) {
     //finds the index as variable j of the selected assignment
-    let j = i + 1;
-    if (!isDrop) {
-        j++;
-    }
-    
-    for (let k = 0; k < titleRows.length; k++) {
-        if (j >= titleRows[k]) {
-            j++;
+    i++;
+    for (let j = 0; j < titleRows.length; j++) {
+        if (titleRows[j] <= i) {
+            i++;
         }
         else {
-            return j;
+            return i;
         }
     }
 
-    return j;
+    return i;
 }
 
 function dateDecoder(dateString) {
