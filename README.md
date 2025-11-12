@@ -42,7 +42,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="center"><a href="https://linkedin.com/in/logan-gillett-941797327" target="blank"><img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="logan-            gillett-941797327" height="30" width="40" /></a> 
     &nbsp;
-       <a href="mailto:l2gillet@uwaterloo.ca" target="_blank" rel="noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Microsoft_Office_Outlook_%282018%E2%80%93present%29.svg" alt="outlook" width="40" height="33"/></a>
+       <a href="mailto:l2gillet@uwaterloo.ca" target="_blank" rel="noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Microsoft_Office_Outlook_%282018%E2%80%932024%29.svg/640px-Microsoft_Office_Outlook_%282018%E2%80%932024%29.svg.png" alt="outlook" width="35" height="33"/></a>
     &nbsp;&nbsp;
     <a href="https://www.lgillett.com/" target="_blank" rel="noreferrer"><img src="resources/blueWebLogo.png" alt="outlook" width="40" height="30"/></a>
 </p>
